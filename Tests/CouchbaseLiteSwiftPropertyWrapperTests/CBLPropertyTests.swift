@@ -345,6 +345,58 @@ final class CBLPropertyTests: XCTestCase {
             "p_array_object": [["p_string": "X"]]
         ])
     }
+    
+    func testDefaultValue() throws {
+        class Model: BaseModel {
+            @CBLProperty(key: "value1", defaultValue: 10)
+            var value1: Int?
+            
+            @CBLProperty(key: "value2", defaultValue: 20)
+            var value2: Int
+            
+            @CBLProperty(key: "value3")
+            var value3: Int?
+        }
+        
+        let dict1 = MutableDictionaryObject()
+        let model = Model(with: dict1)
+        
+        XCTAssertEqual(model.value1, 10)
+        XCTAssertEqual(model.value2, 20)
+        XCTAssertNil(model.value3)
+        
+        XCTAssertNil(dict1.value(forKey: "value1"))
+        XCTAssertNil(dict1.value(forKey: "value2"))
+        XCTAssertNil(dict1.value(forKey: "value3"))
+        
+        model.value1 = 100
+        model.value2 = 200
+        model.value3 = 300
+        
+        XCTAssertEqual(model.value1, 100)
+        XCTAssertEqual(model.value2, 200)
+        XCTAssertEqual(model.value3, 300)
+        
+        XCTAssertEqual(dict1.int(forKey: "value1"), 100)
+        XCTAssertEqual(dict1.int(forKey: "value2"), 200)
+        XCTAssertEqual(dict1.int(forKey: "value3"), 300)
+    }
+    
+    func testValidator() throws {
+        class Model: BaseModel {
+            @CBLProperty(key: "value", validator: {(v) -> Bool in v ?? 0 > 10} )
+            var value: Int?
+        }
+        
+        let dict1 = MutableDictionaryObject()
+        let model = Model(with: dict1)
+        
+        model.value = 5
+        XCTAssertNil(model.value)
+        
+        model.value = 11
+        XCTAssertEqual(model.value, 11)
+    }
 }
 
 public func ==(lhs: [String: Any], rhs: [String: Any] ) -> Bool {

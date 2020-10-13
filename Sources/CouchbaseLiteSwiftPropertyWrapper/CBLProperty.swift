@@ -2,12 +2,21 @@ import CouchbaseLiteSwift
 
 @propertyWrapper
 public struct CBLProperty<T: CBLPropertyProtocol> {
+    
+    public typealias Validator = (T) -> Bool
+    
     private let key: String
     
     private var value: T?
     
-    public init(key: String) {
+    private var defaultValue: T?
+    
+    private var validator: Validator?
+    
+    public init(key: String, defaultValue: T? = nil, validator: Validator? = nil) {
         self.key = key
+        self.defaultValue = defaultValue
+        self.validator = validator
     }
     
     @available(*, unavailable)
@@ -26,7 +35,10 @@ public struct CBLProperty<T: CBLPropertyProtocol> {
             }
 
             let key = model[keyPath: storageKeyPath].key
-            var value = T.create(from: model.dictionary as MutableDictionaryProtocol, key: key)
+            let defaultValue = model[keyPath: storageKeyPath].defaultValue
+            var value = T.create(from: model.dictionary as MutableDictionaryProtocol,
+                                 key: key,
+                                 defaultValue: defaultValue)
             
             // For returning nil for generic type T
             if value == nil {
@@ -38,6 +50,12 @@ public struct CBLProperty<T: CBLPropertyProtocol> {
             return value!
         }
         set {
+            if let validator = model[keyPath: storageKeyPath].validator {
+                if !validator(newValue) {
+                    return
+                }
+            }
+            
             let key = model[keyPath: storageKeyPath].key
             model.dictionary[key].value = newValue.toCBLValue()
             model[keyPath: storageKeyPath].value = newValue
