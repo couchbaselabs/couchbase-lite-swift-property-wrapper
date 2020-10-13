@@ -36,9 +36,9 @@ public struct CBLProperty<T: CBLPropertyProtocol> {
 
             let key = model[keyPath: storageKeyPath].key
             let defaultValue = model[keyPath: storageKeyPath].defaultValue
-            var value = T.create(from: model.dictionary as MutableDictionaryProtocol,
-                                 key: key,
-                                 defaultValue: defaultValue)
+            var value = T.value(from: model.dictionary as MutableDictionaryProtocol,
+                                key: key,
+                                defaultValue: defaultValue)
             
             // For returning nil for generic type T
             if value == nil {

@@ -4,17 +4,17 @@ public typealias MDict = MutableDictionaryProtocol
 public typealias MArray = MutableArrayProtocol
 
 public protocol CBLPropertyProtocol {
-    static func create(from dict: MDict, key: String, defaultValue: Self?) -> Self?
-    static func create(from array: MArray, at index: Int, defaultValue: Self?) -> Self?
+    static func value(from dict: MDict, key: String, defaultValue: Self?) -> Self?
+    static func value(from array: MArray, at index: Int, defaultValue: Self?) -> Self?
     func toCBLValue() -> Any?
 }
 
 extension Int: CBLPropertyProtocol {
-    public static func create(from dict: MDict, key: String, defaultValue: Int?) -> Int? {
+    public static func value(from dict: MDict, key: String, defaultValue: Int?) -> Int? {
         return dict.value(forKey: key) as? Int ?? defaultValue
     }
     
-    public static func create(from array: MArray, at index: Int, defaultValue: Int?) -> Int? {
+    public static func value(from array: MArray, at index: Int, defaultValue: Int?) -> Int? {
         return array.value(at: index) as? Int ?? defaultValue
     }
     
@@ -24,11 +24,11 @@ extension Int: CBLPropertyProtocol {
 }
 
 extension Int64: CBLPropertyProtocol {
-    public static func create(from dict: MDict, key: String, defaultValue: Int64?) -> Int64? {
+    public static func value(from dict: MDict, key: String, defaultValue: Int64?) -> Int64? {
         return dict.value(forKey: key) as? Int64 ?? defaultValue
     }
     
-    public static func create(from array: MArray, at index: Int, defaultValue: Int64?) -> Int64? {
+    public static func value(from array: MArray, at index: Int, defaultValue: Int64?) -> Int64? {
         return array.value(at: index) as? Int64 ?? defaultValue
     }
     
@@ -38,11 +38,11 @@ extension Int64: CBLPropertyProtocol {
 }
 
 extension Double: CBLPropertyProtocol {
-    public static func create(from dict: MDict, key: String, defaultValue: Double?) -> Double? {
+    public static func value(from dict: MDict, key: String, defaultValue: Double?) -> Double? {
         return dict.value(forKey: key) as? Double ?? defaultValue
     }
     
-    public static func create(from array: MArray, at index: Int, defaultValue: Double?) -> Double? {
+    public static func value(from array: MArray, at index: Int, defaultValue: Double?) -> Double? {
         return array.value(at: index) as? Double ?? defaultValue
     }
     
@@ -52,11 +52,11 @@ extension Double: CBLPropertyProtocol {
 }
 
 extension Bool: CBLPropertyProtocol {
-    public static func create(from dict: MDict, key: String, defaultValue: Bool?) -> Bool? {
+    public static func value(from dict: MDict, key: String, defaultValue: Bool?) -> Bool? {
         return dict.value(forKey: key) as? Bool ?? defaultValue
     }
     
-    public static func create(from array: MArray, at index: Int, defaultValue: Bool?) -> Bool? {
+    public static func value(from array: MArray, at index: Int, defaultValue: Bool?) -> Bool? {
         return array.value(at: index) as? Bool ?? defaultValue
     }
     
@@ -66,11 +66,11 @@ extension Bool: CBLPropertyProtocol {
 }
 
 extension String: CBLPropertyProtocol {
-    public static func create(from dict: MDict, key: String, defaultValue: String?) -> String? {
+    public static func value(from dict: MDict, key: String, defaultValue: String?) -> String? {
         return dict.string(forKey: key) ?? defaultValue
     }
     
-    public static func create(from array: MArray, at index: Int, defaultValue: String?) -> String? {
+    public static func value(from array: MArray, at index: Int, defaultValue: String?) -> String? {
         return array.string(at: index) ?? defaultValue
     }
     
@@ -80,11 +80,11 @@ extension String: CBLPropertyProtocol {
 }
 
 extension Date: CBLPropertyProtocol {
-    public static func create(from dict: MDict, key: String, defaultValue: Date?) -> Date? {
+    public static func value(from dict: MDict, key: String, defaultValue: Date?) -> Date? {
         return dict.date(forKey: key) ?? defaultValue
     }
     
-    public static func create(from array: MArray, at index: Int, defaultValue: Date?) -> Date? {
+    public static func value(from array: MArray, at index: Int, defaultValue: Date?) -> Date? {
         return array.date(at: index) ?? defaultValue
     }
     
@@ -94,11 +94,11 @@ extension Date: CBLPropertyProtocol {
 }
 
 extension Blob: CBLPropertyProtocol {
-    public static func create(from dict: MDict, key: String, defaultValue: Blob?) -> Blob? {
+    public static func value(from dict: MDict, key: String, defaultValue: Blob?) -> Blob? {
         return dict.blob(forKey: key) ?? defaultValue
     }
     
-    public static func create(from array: MArray, at index: Int, defaultValue: Blob?) -> Blob? {
+    public static func value(from array: MArray, at index: Int, defaultValue: Blob?) -> Blob? {
         return array.blob(at: index) ?? defaultValue
     }
     
@@ -108,22 +108,22 @@ extension Blob: CBLPropertyProtocol {
 }
 
 extension Array: CBLPropertyProtocol where Element: CBLPropertyProtocol {
-    public static func create(from dict: MDict, key: String, defaultValue: Array<Element>?) -> Array<Element>? {
+    public static func value(from dict: MDict, key: String, defaultValue: Array<Element>?) -> Array<Element>? {
         if let elements = dict.array(forKey: key) {
             var output: [Element] = []
             for i in 0..<elements.count {
-                output.append(Element.create(from: elements, at: i, defaultValue: nil)!)
+                output.append(Element.value(from: elements, at: i, defaultValue: nil)!)
             }
             return output
         }
         return nil
     }
 
-    public static func create(from array: MArray, at index: Int, defaultValue: Array<Element>?) -> Array<Element>? {
+    public static func value(from array: MArray, at index: Int, defaultValue: Array<Element>?) -> Array<Element>? {
         if let elements = array.array(at: index) {
             var output: [Element] = []
             for i in 0..<elements.count {
-                output.append(Element.create(from: elements, at: i, defaultValue: nil)!)
+                output.append(Element.value(from: elements, at: i, defaultValue: nil)!)
             }
             return output
         }
@@ -136,13 +136,13 @@ extension Array: CBLPropertyProtocol where Element: CBLPropertyProtocol {
 }
 
 extension Optional: CBLPropertyProtocol where Wrapped: CBLPropertyProtocol {
-    public static func create(from dict: MDict, key: String, defaultValue: Self?) -> Self? {
-        return Wrapped.create(from: dict, key: key, defaultValue: defaultValue as? Wrapped)
+    public static func value(from dict: MDict, key: String, defaultValue: Self?) -> Self? {
+        return Wrapped.value(from: dict, key: key, defaultValue: defaultValue as? Wrapped)
     }
     
-    public static func create(from array: MArray, at index: Int, defaultValue: Self?) -> Self? {
+    public static func value(from array: MArray, at index: Int, defaultValue: Self?) -> Self? {
         if array.value(at: index) != nil {
-            return Wrapped.create(from: array, at: index, defaultValue: defaultValue as? Wrapped)
+            return Wrapped.value(from: array, at: index, defaultValue: defaultValue as? Wrapped)
         }
         return defaultValue
     }

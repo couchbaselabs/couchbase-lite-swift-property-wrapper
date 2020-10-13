@@ -6,12 +6,12 @@ public protocol CBLPropertyContainer: CBLPropertyProtocol {
 }
 
 extension CBLPropertyContainer {
-    public static func create(from dict: MDict, key: String, defaultValue: Self?) -> Self? {
+    public static func value(from dict: MDict, key: String, defaultValue: Self?) -> Self? {
         if let dict = dict.dictionary(forKey: key) { return self.init(with: dict) }
         return nil
     }
     
-    public static func create(from array: MArray, at index: Int, defaultValue: Self?) -> Self? {
+    public static func value(from array: MArray, at index: Int, defaultValue: Self?) -> Self? {
         if let dict = array.dictionary(at: index) { return self.init(with: dict) }
         return nil
     }
