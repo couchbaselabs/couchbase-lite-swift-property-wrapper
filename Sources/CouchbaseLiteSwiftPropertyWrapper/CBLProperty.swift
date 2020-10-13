@@ -42,8 +42,8 @@ public struct CBLProperty<T: CBLPropertyProtocol> {
             
             // For returning nil for generic type T
             if value == nil {
-                let TN = (T.self as! ExpressibleByNilLiteral.Type)
-                value = (TN.init(nilLiteral: ()) as! T)
+                let typeNil = (T.self as! ExpressibleByNilLiteral.Type)
+                value = (typeNil.init(nilLiteral: ()) as! T)
             }
             
             model[keyPath: storageKeyPath].value = value!
