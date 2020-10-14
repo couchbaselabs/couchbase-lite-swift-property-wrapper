@@ -21,12 +21,12 @@ extension CBLPropertyContainer {
     }
 }
 
-class CBLModel: CBLPropertyContainer {
-    let dictionary: MutableDictionaryProtocol
+open class CBLModel: CBLPropertyContainer {
+    public let dictionary: MutableDictionaryProtocol
     
-    let document: MutableDocument?
+    public let document: MutableDocument?
     
-    required init(with dictionary: MutableDictionaryProtocol) {
+    required public init(with dictionary: MutableDictionaryProtocol) {
         self.dictionary = dictionary
         if let doc = dictionary as? MutableDocument {
             self.document = doc
@@ -35,20 +35,20 @@ class CBLModel: CBLPropertyContainer {
         }
     }
     
-    convenience init(with document: MutableDocument) {
+    convenience public init(with document: MutableDocument) {
         self.init(with: document as MutableDictionaryProtocol)
     }
     
-    convenience init(with document: Document) {
+    convenience public init(with document: Document) {
         self.init(with: document.toMutable() as MutableDictionaryProtocol)
     }
     
-    convenience init() {
+    convenience public init() {
         self.init(with: MutableDictionaryObject() as MutableDictionaryProtocol)
     }
     
     @discardableResult
-    func save(into database: Database, concurrencyControl: ConcurrencyControl = .lastWriteWins) throws -> Bool {
+    public func save(into database: Database, concurrencyControl: ConcurrencyControl = .lastWriteWins) throws -> Bool {
         guard let doc = self.document else {
             fatalError("The model cannot be saved as it doesn't contain a document")
         }
