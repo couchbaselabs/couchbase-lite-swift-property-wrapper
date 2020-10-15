@@ -9,7 +9,7 @@ An experiment using Swift's Propery Wrappers to build data model for Couchbase L
 * As the `EnclosingSelf feature is used, only Class (not Struct) can use the property wrapper.
 
 ## Requirements
-* CouchbaseLiteSwift 2.8+ (NOT RELEASED YET)
+* CouchbaseLiteSwift 2.8+
 
 ## Platforms
 * iOS (9.0+) and macOS (10.11+)
@@ -29,6 +29,9 @@ class Person: CBLModel {
     
     @CBLProperty(key: "contacts")
     var contacts: [Person]?
+    
+    @CBLProperty(key: "dependents", defaultValue: 0)
+    var dependents: Int
 }
 
 class Address: CBLModel {
